@@ -1,32 +1,35 @@
-// TweetlyLanding.tsx
-import { useEffect, useState } from 'react';
-import { Typewriter } from 'react-simple-typewriter';
-import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react'
+import { Typewriter } from 'react-simple-typewriter'
+import { motion } from 'framer-motion'
+import { supabase } from '../lib/supabase' // ✅ adjust if your path differs
 
-// Add the prop type
-type LandingViewProps = {
-  onStart: () => void;
-};
-
-// Accept the prop in the component
-export default function LandingView({ onStart }: LandingViewProps) {
-  const [showTyped, setShowTyped] = useState(false);
+export default function LandingView() {
+  const [showTyped, setShowTyped] = useState(false)
 
   useEffect(() => {
-    const timeout = setTimeout(() => setShowTyped(true), 500);
-    // Always scroll to top when this component mounts
-    window.scrollTo(0, 0);
-    return () => clearTimeout(timeout);
-  }, []);
+    const timeout = setTimeout(() => setShowTyped(true), 500)
+    window.scrollTo(0, 0)
+    return () => clearTimeout(timeout)
+  }, [])
 
   const scrollToFeatures = () => {
-    const section = document.getElementById('features');
-    section?.scrollIntoView({ behavior: 'smooth' });
-  };
+    const section = document.getElementById('features')
+    section?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  const handleGoogleLogin = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: 'https://tweetly-frontend.vercel.app' // ✅ use your Vercel URL or localhost for dev
+      }
+    })
+
+    if (error) console.error('Login error:', error)
+  }
 
   return (
     <div className="bg-[#111111] text-white font-sans overflow-x-hidden">
-      {/* Animated Page Wrapper */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -49,7 +52,7 @@ export default function LandingView({ onStart }: LandingViewProps) {
           <div className="flex flex-col md:flex-row items-center gap-4 mb-12">
             <button
               className="bg-white text-black px-6 py-3 font-semibold rounded-md hover:opacity-90"
-              onClick={onStart}
+              onClick={handleGoogleLogin}
             >
               Try Tweetly
             </button>
@@ -139,5 +142,5 @@ export default function LandingView({ onStart }: LandingViewProps) {
         </section>
       </motion.div>
     </div>
-  );
+  )
 }

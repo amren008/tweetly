@@ -1,6 +1,5 @@
-// TweetlyHome.tsx
-import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useState } from 'react'
+import { motion } from 'framer-motion'
 import {
   Home,
   PencilLine,
@@ -9,7 +8,8 @@ import {
   Brain,
   LogOut,
   Menu,
-} from 'lucide-react';
+} from 'lucide-react'
+import { supabase } from '../lib/supabase'
 
 const navItems = [
   { icon: Home, label: 'Dashboard' },
@@ -17,15 +17,22 @@ const navItems = [
   { icon: Settings, label: 'Preferences' },
   { icon: Clock, label: 'Tweet History' },
   { icon: Brain, label: 'AI Models' },
-];
+]
 
 export default function TweetlyHome() {
-  const [active, setActive] = useState('Create Tweet');
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [active, setActive] = useState('Create Tweet')
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut()
+    if (error) {
+      console.error('Logout error:', error)
+    }
+  }
 
   return (
     <div className="flex h-screen w-full bg-[#111111] text-white overflow-hidden">
-      {/* Sidebar - responsive */}
+      {/* Sidebar */}
       <div
         className={`fixed inset-y-0 left-0 z-40 transform md:relative md:translate-x-0 md:flex md:flex-col md:w-64 bg-[#18181b] p-6 border-r border-[#222] transition-transform duration-300 ease-in-out ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
@@ -36,8 +43,8 @@ export default function TweetlyHome() {
             <button
               key={label}
               onClick={() => {
-                setActive(label);
-                setSidebarOpen(false);
+                setActive(label)
+                setSidebarOpen(false)
               }}
               className={`flex items-center gap-3 px-3 py-2 rounded-md transition-all hover:bg-[#2a2a2a] ${
                 active === label ? 'bg-[#2a2a2a]' : ''
@@ -48,7 +55,10 @@ export default function TweetlyHome() {
             </button>
           ))}
         </nav>
-        <button className="mt-auto flex items-center gap-3 px-3 py-2 text-red-400 hover:text-red-300">
+        <button
+          onClick={handleLogout}
+          className="mt-auto flex items-center gap-3 px-3 py-2 text-red-400 hover:text-red-300"
+        >
           <LogOut size={20} />
           <span className="text-sm font-medium">Logout</span>
         </button>
@@ -64,7 +74,7 @@ export default function TweetlyHome() {
 
       {/* Main content */}
       <div className="flex-1 flex flex-col h-full overflow-y-auto">
-        {/* Mobile menu icon only */}
+        {/* Mobile menu icon */}
         <div className="md:hidden relative px-4 py-3 bg-[#111111]">
           <button
             onClick={() => setSidebarOpen(true)}
@@ -90,5 +100,5 @@ export default function TweetlyHome() {
         </main>
       </div>
     </div>
-  );
+  )
 }
