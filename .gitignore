@@ -1,0 +1,22 @@
+# Node modules (frontend + backend)
+tweetly-frontend/node_modules/
+tweetly-backend/node_modules/
+
+# Environment variables
+tweetly-frontend/.env
+tweetly-backend/.env
+
+# Build outputs
+tweetly-frontend/dist/
+tweetly-backend/dist/
+tweetly-backend/build/
+
+# Logs
+**/*.log
+
+# macOS
+.DS_Store
+
+# Editor folders
+.vscode/
+.idea/
