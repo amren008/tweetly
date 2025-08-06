@@ -1,16 +1,27 @@
 import { useEffect, useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
 import { supabase } from './lib/supabase'
-import type { User } from '@supabase/supabase-js' // ✅ Add this
-
+import type { User } from '@supabase/supabase-js'
+import {
+  Routes,
+  Route,
+  Navigate,
+  useLocation
+} from 'react-router-dom'
 import LandingView from './views/LandingView'
 import TweetlyHome from './views/TweetlyHome'
+import { motion } from 'framer-motion'
 
 function App() {
-  const [user, setUser] = useState<User | null>(null) // ✅ Fix typing
+  // 🔹 Auth state: current user and loading status
+  const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
+  const location = useLocation()
 
   useEffect(() => {
+    // Always start in dark mode
+    document.documentElement.classList.add('dark')
+
+    // 🔹 Fetch initial session on page load
     const getSession = async () => {
       const { data: { session } } = await supabase.auth.getSession()
       setUser(session?.user ?? null)
@@ -19,6 +30,7 @@ function App() {
 
     getSession()
 
+    // 🔹 Listen for login/logout state changes
     const {
       data: { subscription }
     } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -28,34 +40,40 @@ function App() {
     return () => subscription.unsubscribe()
   }, [])
 
-  if (loading) return <div className="text-white">Loading...</div>
+  // 🔹 Loading screen while checking auth
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-[#111111] text-white">
+        <motion.div
+          className="w-10 h-10 border-4 border-white border-t-transparent rounded-full animate-spin"
+          initial={{ rotate: 0 }}
+          animate={{ rotate: 360 }}
+          transition={{ repeat: Infinity, ease: 'linear', duration: 1 }}
+        />
+      </div>
+    )
+  }
 
   return (
-    <div className="w-full min-h-screen bg-zinc-900 text-white overflow-x-hidden">
-      <AnimatePresence mode="wait">
-        {user ? (
-          <motion.div
-            key="demo"
-            initial={{ opacity: 0, x: 100 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -100 }}
-            transition={{ duration: 0.5, ease: 'easeInOut' }}
-          >
-            <TweetlyHome />
-          </motion.div>
-        ) : (
-          <motion.div
-            key="landing"
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.6, ease: 'easeInOut' }}
-          >
-            <LandingView />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+    <Routes location={location} key={location.pathname}>
+      {/* 🔹 Public landing page */}
+      <Route path="/" element={<LandingView />} />
+
+      {/* 🔹 Redirect /app to /app/create (clean routing) */}
+      <Route
+        path="/app"
+        element={<Navigate to="/app/create" replace />}
+      />
+
+      {/* 🔹 Main app page (CreateTweet + TweetHistory) — protected */}
+      <Route
+        path="/app/create"
+        element={user ? <TweetlyHome /> : <Navigate to="/" replace />}
+      />
+
+      {/* 🔹 Catch-all route redirects to landing */}
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   )
 }
 

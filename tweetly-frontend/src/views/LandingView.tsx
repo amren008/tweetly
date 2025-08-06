@@ -1,27 +1,31 @@
 import { useEffect, useState } from 'react'
 import { Typewriter } from 'react-simple-typewriter'
 import { motion } from 'framer-motion'
-import { supabase } from '../lib/supabase' // ✅ adjust if your path differs
+import { supabase } from '../lib/supabase'
 
 export default function LandingView() {
   const [showTyped, setShowTyped] = useState(false)
 
   useEffect(() => {
+    // 🔹 Delay to trigger typewriter animation
     const timeout = setTimeout(() => setShowTyped(true), 500)
+    // Scroll to top on load
     window.scrollTo(0, 0)
     return () => clearTimeout(timeout)
   }, [])
 
+  // 🔹 Scroll to feature section
   const scrollToFeatures = () => {
     const section = document.getElementById('features')
     section?.scrollIntoView({ behavior: 'smooth' })
   }
 
+  // 🔹 Google login via Supabase
   const handleGoogleLogin = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: 'https://tweetly-frontend.vercel.app' // ✅ use your Vercel URL or localhost for dev
+        redirectTo: `${window.location.origin}/app` // redirect after login
       }
     })
 
@@ -35,8 +39,9 @@ export default function LandingView() {
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
       >
-        {/* Hero Section */}
+        {/* === Hero Section === */}
         <section className="flex flex-col items-center justify-center min-h-screen px-6 text-center">
+          {/* 🔹 Animated heading */}
           <h1
             className="text-4xl md:text-6xl font-bold mb-10 max-w-2xl mx-auto"
             style={{ fontFamily: "'Clash Display', sans-serif" }}
@@ -49,6 +54,8 @@ export default function LandingView() {
               />
             )}
           </h1>
+
+          {/* 🔹 CTA + Learn more buttons */}
           <div className="flex flex-col md:flex-row items-center gap-4 mb-12">
             <button
               className="bg-white text-black px-6 py-3 font-semibold rounded-md hover:opacity-90"
@@ -63,7 +70,11 @@ export default function LandingView() {
               Learn more about Tweetly
             </button>
           </div>
+
+          {/* 🔹 Divider */}
           <div className="w-40 h-1 bg-white mb-10 rounded-full opacity-60" />
+
+          {/* 🔹 App description */}
           <div
             className="max-w-3xl text-md leading-relaxed text-center opacity-80 px-4"
             style={{ fontFamily: "'Inter', sans-serif" }}
@@ -78,17 +89,20 @@ export default function LandingView() {
           </div>
         </section>
 
-        {/* Features Section */}
+        {/* === Features Section === */}
         <section
           id="features"
           className="w-full flex flex-col justify-start items-center px-4 sm:px-6 md:px-8 pt-12 pb-24"
         >
+          {/* 🔹 Section heading */}
           <h2
-            className="text-3xl md:text-5xl font-semibold mb-12 text-center font-[Clash Display]"
+            className="text-3xl md:text-5xl font-semibold mb-12 text-center"
             style={{ fontFamily: "'Clash Display', sans-serif" }}
           >
             Automate your tweets.
           </h2>
+
+          {/* 🔹 Feature cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-10 gap-x-8 max-w-5xl w-full">
             {[
               {
