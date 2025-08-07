@@ -1,4 +1,3 @@
-// Imports
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import {
@@ -9,53 +8,67 @@ import {
   Loader2,
 } from 'lucide-react'
 import { Typewriter } from 'react-simple-typewriter'
+import { supabase } from '../lib/supabase' // 🔹 Ensure this path is correct
 
-// Options for tone and length selection buttons
 const tones = ['Funny', 'Professional', 'Motivational', 'Sarcastic']
 const lengths = ['Short', 'Medium', 'Thread', 'Twitter Free']
 
 export default function CreateTweet() {
-  // === Local State ===
   const [progress, setProgress] = useState('')
   const [tone, setTone] = useState('Professional')
   const [length, setLength] = useState('Short')
   const [generated, setGenerated] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
 
-  // === Handle "Generate Tweet" click ===
-  const handleGenerate = () => {
+  // 🔹 Send request to backend to generate a tweet
+  const handleGenerate = async () => {
     setIsGenerating(true)
     setGenerated(null)
 
-    // Simulate tweet generation delay
-    setTimeout(() => {
-      setGenerated(`🚀 Just finished: ${progress.trim()}`)
+    const session = await supabase.auth.getSession()
+    const userId = session.data.session?.user.id
+
+    if (!userId) {
+      alert('You must be logged in to generate tweets.')
       setIsGenerating(false)
-    }, 2000)
+      return
+    }
+
+    try {
+      const res = await fetch('http://localhost:3000/generate-tweet', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          progress,
+          tone,
+          length,
+        }),
+      })
+
+      const data = await res.json()
+      setGenerated(data.tweet)
+    } catch (err) {
+      console.error('Error generating tweet:', err)
+      setGenerated('Failed to generate tweet.')
+    } finally {
+      setIsGenerating(false)
+    }
   }
 
-  // === Clear both input and result ===
   const handleReset = () => {
     setProgress('')
     setGenerated(null)
   }
 
-  // === Copy generated tweet to clipboard ===
   const handleCopy = () => {
     if (generated) navigator.clipboard.writeText(generated)
   }
 
   return (
     <div className="max-w-3xl mx-auto w-full space-y-10 text-white">
-      {/* Page Title */}
-      <motion.h1
-        className="text-2xl md:text-3xl font-semibold text-center"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
-        Create a Tweet
-      </motion.h1>
-
       {/* === Input Textarea === */}
       <div>
         <label className="block mb-2 text-sm font-medium text-gray-300">
@@ -114,7 +127,6 @@ export default function CreateTweet() {
             </motion.button>
           ))}
         </div>
-        {/* Special note for "Twitter Free" */}
         {length === 'Twitter Free' && (
           <p className="text-xs text-yellow-400 mt-1">
             Twitter Free users may face length limits. We'll keep it short.
