@@ -1,14 +1,12 @@
 // ✅ Core dependencies
 import dotenv from 'dotenv'
 dotenv.config()
+
 import express from 'express'
 import cors from 'cors'
 
 // ✅ Import API route
 import generateTweetRoute from './routes/generate-tweet'
-
-// ✅ Load environment variables
-dotenv.config()
 
 // ✅ Initialize Express app
 const app = express()
@@ -18,6 +16,10 @@ app.use(cors())
 app.use(express.json())
 
 // ✅ Routes
+app.get('/', (req, res) => {
+  res.send('✅ Tweetly backend is live')
+})
+
 app.use('/generate-tweet', generateTweetRoute)
 
 // ✅ Start server
