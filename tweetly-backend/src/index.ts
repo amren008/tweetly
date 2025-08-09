@@ -11,8 +11,19 @@ import generateTweetRoute from './routes/generate-tweet'
 // ✅ Initialize Express app
 const app = express()
 
+// ✅ Secure CORS configuration
+app.use(
+  cors({
+    origin: [
+      'https://usetweetly.vercel.app', // ✅ production frontend
+      'http://localhost:5173'          // ✅ local dev (optional)
+    ],
+    methods: ['GET', 'POST'],
+    credentials: true,
+  })
+)
+
 // ✅ Middleware
-app.use(cors())
 app.use(express.json())
 
 // ✅ Routes
