@@ -8,7 +8,7 @@ import {
   Loader2,
 } from 'lucide-react'
 import { Typewriter } from 'react-simple-typewriter'
-import { supabase } from '../lib/supabase' // 🔹 Ensure this path is correct
+import { supabase } from '../lib/supabase'
 
 const tones = ['Funny', 'Professional', 'Motivational', 'Sarcastic']
 const lengths = ['Short', 'Medium', 'Thread', 'Twitter Free']
@@ -20,7 +20,9 @@ export default function CreateTweet() {
   const [generated, setGenerated] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
 
-  // 🔹 Send request to backend to generate a tweet
+  // ✅ Use env-based API URL
+  const API_URL = import.meta.env.VITE_API_URL
+
   const handleGenerate = async () => {
     setIsGenerating(true)
     setGenerated(null)
@@ -35,7 +37,7 @@ export default function CreateTweet() {
     }
 
     try {
-      const res = await fetch('http://localhost:3000/generate-tweet', {
+      const res = await fetch(`${API_URL}/generate-tweet`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -52,7 +54,7 @@ export default function CreateTweet() {
       setGenerated(data.tweet)
     } catch (err) {
       console.error('Error generating tweet:', err)
-      setGenerated('Failed to generate tweet.')
+      setGenerated('❌ Failed to generate tweet.')
     } finally {
       setIsGenerating(false)
     }
