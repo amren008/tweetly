@@ -56,13 +56,13 @@ export default function TweetHistory() {
   return (
     <div className="max-w-3xl mx-auto space-y-8 text-white">
       {/* Title */}
-      <motion.h1
+      {/* <motion.h1
         className="text-2xl md:text-3xl font-semibold text-center"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
       >
         Your Tweet History
-      </motion.h1>
+      </motion.h1> */}
 
       {/* No tweets */}
       {!loading && tweets.length === 0 && (

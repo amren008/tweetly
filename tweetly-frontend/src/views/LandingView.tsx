@@ -1,36 +1,36 @@
-import { useEffect, useState } from 'react'
-import { Typewriter } from 'react-simple-typewriter'
-import { motion } from 'framer-motion'
-import { supabase } from '../lib/supabase'
+import { useEffect, useState } from "react";
+import { Typewriter } from "react-simple-typewriter";
+import { motion } from "framer-motion";
+import { supabase } from "../lib/supabase";
 
 export default function LandingView() {
-  const [showTyped, setShowTyped] = useState(false)
+  const [showTyped, setShowTyped] = useState(false);
 
   useEffect(() => {
     // 🔹 Delay to trigger typewriter animation
-    const timeout = setTimeout(() => setShowTyped(true), 500)
+    const timeout = setTimeout(() => setShowTyped(true), 500);
     // Scroll to top on load
-    window.scrollTo(0, 0)
-    return () => clearTimeout(timeout)
-  }, [])
+    window.scrollTo(0, 0);
+    return () => clearTimeout(timeout);
+  }, []);
 
   // 🔹 Scroll to feature section
   const scrollToFeatures = () => {
-    const section = document.getElementById('features')
-    section?.scrollIntoView({ behavior: 'smooth' })
-  }
+    const section = document.getElementById("features");
+    section?.scrollIntoView({ behavior: "smooth" });
+  };
 
   // 🔹 Google login via Supabase
   const handleGoogleLogin = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
+      provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/app` // redirect after login
-      }
-    })
+        redirectTo: `${window.location.origin}/app`, // redirect after login
+      },
+    });
 
-    if (error) console.error('Login error:', error)
-  }
+    if (error) console.error("Login error:", error);
+  };
 
   return (
     <div className="bg-[#111111] text-white font-sans overflow-x-hidden">
@@ -43,12 +43,12 @@ export default function LandingView() {
         <section className="flex flex-col items-center justify-center min-h-screen px-6 text-center">
           {/* 🔹 Animated heading */}
           <h1
-            className="text-4xl md:text-6xl font-bold mb-10 max-w-2xl mx-auto"
+            className="text-4xl md:text-6xl mb-10 max-w-2xl mx-auto"
             style={{ fontFamily: "'Clash Display', sans-serif" }}
           >
             {showTyped && (
               <Typewriter
-                words={["Say Hello to Tweetly"]}
+                words={["Welcome to Tweetly"]}
                 cursor={false}
                 typeSpeed={80}
               />
@@ -61,7 +61,7 @@ export default function LandingView() {
               className="bg-white text-black px-6 py-3 font-semibold rounded-md hover:opacity-90"
               onClick={handleGoogleLogin}
             >
-              Try Tweetly
+              Get Started
             </button>
             <button
               onClick={scrollToFeatures}
@@ -80,11 +80,12 @@ export default function LandingView() {
             style={{ fontFamily: "'Inter', sans-serif" }}
           >
             <p>
-              Tweetly is your AI assistant for tweeting. Whether you're building a side project,
-              learning to code, or documenting your startup journey, Tweetly converts your progress
-              into clean, consistent, and personalized tweets. It helps you save time, build in public,
-              and stay visible without the stress of writing daily updates. Let Tweetly handle your content
-              while you focus on creating.
+              Tweetly helps you share your journey without the writing stress.
+              Whether you're building something, learning, or tracking goals,
+              just type what you’ve been working on, and our AI turns it into
+              clean, engaging tweets tailored to your tone and length. No more
+              blank boxes or overthinking. Stay consistent, save time, and keep
+              your followers in the loop with ease.
             </p>
           </div>
         </section>
@@ -96,38 +97,38 @@ export default function LandingView() {
         >
           {/* 🔹 Section heading */}
           <h2
-            className="text-3xl md:text-5xl font-semibold mb-12 text-center"
+            className="text-3xl md:text-5xl mb-12 text-center"
             style={{ fontFamily: "'Clash Display', sans-serif" }}
           >
-            Automate your tweets.
+            Smarter tweets. Less effort.
           </h2>
 
           {/* 🔹 Feature cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-10 gap-x-8 max-w-5xl w-full">
             {[
               {
-                title: "Effortless Progress Sharing",
-                desc: "Tweetly automatically turns your work into tweets. You just update your progress and we handle the rest."
+                title: "Generate tweet-ready posts",
+                desc: "Just type what you’ve been working on, and Tweetly instantly turns it into clean, concise tweets ready to share.",
               },
               {
-                title: "AI-Powered Customization",
-                desc: "Select tones, styles, and formats that match your personality. Tweetly adapts every tweet to your voice."
+                title: "Choose your tone and length",
+                desc: "Whether you want something short and sharp or detailed and thoughtful, Tweetly adapts to your style.",
               },
               {
-                title: "Time-Saving Automation",
-                desc: "No more pausing to write. Schedule tweets or let Tweetly generate them instantly from your updates."
+                title: "Save time and mental effort",
+                desc: "Forget writer’s block. Tweetly helps you share updates quickly so you can stay focused on what you’re building.",
               },
               {
-                title: "Stay Consistent Without Stress",
-                desc: "Maintain an active social presence even when you're deep in work. Tweetly tweets for you automatically."
+                title: "Clean, engaging language every time",
+                desc: "Your tweets are written to sound natural, structured, and engaging, even if you're not a writer.",
               },
               {
-                title: "Built for Builders",
-                desc: "Indie hackers, learners, and founders can use Tweetly to share progress without losing time or energy."
+                title: "Keep track of your tweet history",
+                desc: "Review previously generated tweets to stay consistent, revisit past updates, or reuse them anytime.",
               },
               {
-                title: "Personalized to Your Preferences",
-                desc: "Tweetly remembers your style and preferences to improve every tweet it creates, the more you use it."
+                title: "Built for builders, learners, and creators",
+                desc: "Whether you're building, learning, or sharing milestones, Tweetly is made for your journey.",
               },
             ].map((feature, i) => (
               <motion.div
@@ -156,5 +157,5 @@ export default function LandingView() {
         </section>
       </motion.div>
     </div>
-  )
+  );
 }
